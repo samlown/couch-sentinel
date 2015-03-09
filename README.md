@@ -1,14 +1,16 @@
 # Quorumify
 
-Automatic failure detection and master selection. With similar objectives to [Redis Sentinel](http://redis.io/topics/sentinel), Quorumify is a generic solution to help you maintain connection configuration details and push changes to clients as manual requests or in the event of a system failure. Communication is handled by ZeroMQ using PUB/SUB sockets to efficiently transmit heartbeats between services and elect a new master in the case of failure. 
+Automated monitoring, failure detection, and master selection. With similar objectives to [Redis Sentinel](http://redis.io/topics/sentinel), Quorumify is a generic solution to maintain a master host configuration detail in systems with a potential single point of failure.
 
-There are two parts to quorumify:
+Changes can be either requested manually or as a result of fault detection. A quorum algorithm decides which host should be the master before allowing a configuration detail to change. Communication is handled by ZeroMQ using PUB/SUB sockets to efficiently transmit heartbeats between multiple servers and elect a new master in the case of failure.
 
- * `quorumify`, the main server application that reads in a configuration file, sets up ZeroMQ PUB/SUB sockets, and starts listening out for incoming messages.
- * `dbproxy`, subscribes to the sentinel's PUB socket, and prepares to relay incoming requests to the current master.
+There are several parts to Quorumify:
+
+ * `quorumify-server` reads a configuration file and periodically sends out heartbeats to anyone subscribed. In turn, the process listens for incoming heartbeats and attempts to suggest an alternate host in the case of failure or when requested.
+ * `quorumify-client` subscribes to servers and waits for events decided by a quorum. If a change occurs, the configuration file determines what actions should be taken.
+ * Client libraries subscribe to quorumify servers using ZeroMQ SUB sockets and wait for incoming changes that prompt some kind of action specifically programmed in the library. The Quorumify protocol is sufficiently simple for your own libraries to be implemented easily.
 
 
 ## Configuration
 
-Sentinel accepts a simple YAML configuration file the describes the CouchDB environment.
-
+Quorumify accepts a simple YAML configuration file the describes the environment.
