@@ -1,10 +1,10 @@
-# Couch Sentinel
+# Quorumify
 
-Automatic connection failover for CouchDB. With similar objectives to [Redis Sentinel](http://redis.io/topics/sentinel), Couch Sentinel will help you maintain a configuration of CouchDB servers replicating each other, monitor them for issues, determine which should be the master, and automatically push a new configuration to proxies (`dbproxy`) via ZeroMQ.
+Automatic failure detection and master selection. With similar objectives to [Redis Sentinel](http://redis.io/topics/sentinel), Quorumify is a generic solution to help you maintain connection configuration details and push changes to clients as manual requests or in the event of a system failure. Communication is handled by ZeroMQ using PUB/SUB sockets to efficiently transmit heartbeats between services and elect a new master in the case of failure. 
 
-The tool is split into two applications:
+There are two parts to quorumify:
 
- * `sentinel`, reads in a configuration file, sets up a ZeroMQ PUB socket, and starts polling the couchdb servers for issues. If something goes wrong, it'll try to decide what to do.
+ * `quorumify`, the main server application that reads in a configuration file, sets up ZeroMQ PUB/SUB sockets, and starts listening out for incoming messages.
  * `dbproxy`, subscribes to the sentinel's PUB socket, and prepares to relay incoming requests to the current master.
 
 
