@@ -1,6 +1,6 @@
-# Quorumify
+# Quorgo
 
-Automated monitoring, failure detection, and master selection. With similar objectives to [Redis Sentinel](http://redis.io/topics/sentinel), Quorumify is a generic solution to maintain a master host configuration detail in systems with a potential single point of failure.
+Automated monitoring, failure detection, and configuration. With similar objectives to [Redis Sentinel](http://redis.io/topics/sentinel), Quorgo is a generic solution to maintain and check on the status of a list of hosts that provide services, and make .
 
 Changes can be either requested manually or as a result of fault detection. A quorum algorithm decides which host should be the master before allowing a configuration detail to change. Communication is handled by ZeroMQ using PUB/SUB sockets to efficiently transmit heartbeats between multiple servers and elect a new master in the case of failure.
 
